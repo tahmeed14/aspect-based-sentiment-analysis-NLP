@@ -113,8 +113,16 @@ path_csv = r"C:\\Users\\Tahmeed\\Dropbox\\Masters\\win-2019\\NLP_SI630\\final-pr
 aspects_terms_pd.to_csv(path_csv, index = None, header = True)
 
 
+# Baseline Aspect-Term Extraction
+aspect_term_bank = []
 
+terms = aspects_terms_pd['Aspect Term']
 
+for i in terms:
+	aspect_term_bank.append(i)
+
+aspects_term_bank = set(aspect_term_bank)
+print(len(aspects_term_bank))
 
 
 
