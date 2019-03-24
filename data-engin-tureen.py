@@ -6,6 +6,10 @@
 
 import xml.etree.ElementTree as ET # Import XML parser library
 import pandas as pd # import Pandas library
+import numpy as np
+import math
+from collections import Counter
+from collections import defaultdict
 
 # I Data Processing of raw data
 # Read in XML data
@@ -100,29 +104,80 @@ for row in aspects_terms_pd.itertuples():
 			pol = "neutral"
 
 		data_dict["Aspect Term"] = terms_list[i]
-		data_dict["Aspect Polarity"] = pols_list[i]
+		data_dict["Aspect Polarity"] = pol
+		data_dict["All Aspect Terms"] = terms_list
 
 		aspects_data_list.append(data_dict)
 
 # Convert to Pandas Data Frame for convenience
-aspects_terms_pd = pd.DataFrame(aspects_data_list)
-aspects_terms_pd = aspects_terms_pd[['Review', 'Review ID', 'Aspect Term', 'Aspect Polarity']] # re-order
+aspect_terms_pd = pd.DataFrame(aspects_data_list)
+aspect_terms_pd = aspect_terms_pd[['Review', 'Review ID', 'Aspect Term', 'Aspect Polarity', 'All Aspect Terms']] # re-order
 
 # Save to a CSV for future use
 path_csv = r"C:\\Users\\Tahmeed\\Dropbox\\Masters\\win-2019\\NLP_SI630\\final-project\\asba\\aspect-terms-data.csv"
-aspects_terms_pd.to_csv(path_csv, index = None, header = True)
+aspect_terms_pd.to_csv(path_csv, index = None, header = True)
 
 
-# Baseline Aspect-Term Extraction
-aspect_term_bank = []
+# Evaluation Metrics for Project Update (We will change this for the final project)
+# For 3/24/2019, we are implementating the most basic baseline method proposed in the project update
 
-terms = aspects_terms_pd['Aspect Term']
+# Split the data as 80% train and 20% dev (project update test)
+train_index = math.floor(0.80 * aspect_terms_pd.shape[0]) # 80 % of the current data as training data
 
-for i in terms:
-	aspect_term_bank.append(i)
+train_data = aspect_terms_pd.iloc[0:train_index, :]
+test_data = aspect_terms_pd.iloc[train_index:aspect_terms_pd.shape[0], :]
 
-aspects_term_bank = set(aspect_term_bank)
-print(len(aspects_term_bank))
+print(aspect_terms_pd.shape)
+print(train_data.shape)
+print(test_data.shape)
+print(train_data.shape[0] + test_data.shape[0])
+
+# SubTask 1: Aspect Term Extraction
+terms_bank = set(train_data['Aspect Term']) # extraction model
+print(len(terms_bank))
+print()
+
+extract_preds = []
+
+for row in test_data.itertuples():
+
+	# tokenize the review
+	rev_tokens = row[1].split()
+	# print(rev_tokens)
+	asp_terms = []
+
+	for tok in rev_tokens:
+		if tok in terms_bank:
+			asp_terms.append(tok)
+
+	data_dict = {}
+	data_dict["Review ID"] = row[2]
+	data_dict["Extracted Aspect Terms"] = asp_terms
+	data_dict["True Aspect Terms"] = row[5]
+	extract_preds.append(data_dict)
+
+extract_preds_pd = pd.DataFrame(extract_preds)
+# Save to a CSV for inspection
+path_csv = r"C:\\Users\\Tahmeed\\Dropbox\\Masters\\win-2019\\NLP_SI630\\final-project\\asba\\extract-terms-data.csv"
+extract_preds_pd.to_csv(path_csv, index = None, header = True)
+
+pred_aspect_terms = np.array(extract_preds_pd['Extracted Aspect Terms'])
+true_aspect_terms = np.array(extract_preds_pd["True Aspect Terms"])
+
+print("Percentage of Extractions that are correct for the Test Data: ")
+print(sum(pred_aspect_terms == true_aspect_terms) / test_data.shape[1], " %")
 
 
+# SubTask 2: Sentiment Polarity Classifier
 
+# Weill use polarity frequency to classify our test data
+
+sentiment_classifier = defaultdict(lambda : defaultdict(lambda : 0))
+
+for row in train_data.itertuples():
+	aspect_term = row[3]
+	aspect_polarity = row[4]
+
+	sentiment_classifier[aspect_term][aspect_polarity] += 1
+
+print(sentiment_classifier["food"])
