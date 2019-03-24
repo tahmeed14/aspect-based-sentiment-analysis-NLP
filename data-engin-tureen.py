@@ -165,7 +165,7 @@ pred_aspect_terms = np.array(extract_preds_pd['Extracted Aspect Terms'])
 true_aspect_terms = np.array(extract_preds_pd["True Aspect Terms"])
 
 print("Percentage of Extractions that are correct for the Test Data: ")
-print(sum(pred_aspect_terms == true_aspect_terms) / test_data.shape[1], " %")
+print(100 * (sum(pred_aspect_terms == true_aspect_terms) / test_data.shape[0]), " %")
 
 
 # SubTask 2: Sentiment Polarity Classifier
@@ -180,4 +180,25 @@ for row in train_data.itertuples():
 
 	sentiment_classifier[aspect_term][aspect_polarity] += 1
 
-print(sentiment_classifier["food"])
+sentiment_preds = []
+sentiment_truths = []
+
+for row in test_data.itertuples():
+	aspect_term = row[3]
+
+	if aspect_term not in terms_bank:
+		sent_pred = "missing"
+
+	else:
+		classifier = sentiment_classifier[aspect_term]
+		sent_pred = max(classifier, key = classifier.get)
+
+	sentiment_preds.append(sent_pred)
+	sentiment_truths.append(row[4])
+
+sentiment_preds = np.array(sentiment_preds)
+sentiment_truths = np.array(sentiment_truths)
+
+print()
+print("Percentage of Aspect Sentiment Classification that are correct for the Test Data: ")
+print(100 * (sum(sentiment_preds == sentiment_truths) / test_data.shape[0]), " %")
