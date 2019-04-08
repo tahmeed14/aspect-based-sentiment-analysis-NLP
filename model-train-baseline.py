@@ -5,51 +5,35 @@
 # Code to train the proposed baseline ASBA model
 
 import pandas as pd
+import math
+from collections import Counter
+from collections import defaultdict
 
-# Read in Data
-reviews_pd = pd.read_csv("processed-reviews.csv", index_col = False)
-
-# We are currently only interested in aspect-term extraction and aspect-term sentiment classification
-# Column Names for convenience
-# ['Aspect Term', 'Aspect Polarity', 'Category', 'Category Polarity', 'Review', 'Review ID']
+# Read in the dataset that is row-wise based on aspect terms instead of review
+aspect_terms_pd = pd.read_csv("aspect-terms-data.csv", index_col = False)
 
 # We will have to re-format the dataset
-aspects_pd = reviews_pd[['Review', 'Review ID', 'Aspect Term', 'Aspect Polarity', 'Aspect Count']]
+aspect_terms_pd = aspect_terms_pd[['Review', 'Review ID', 'Aspect Term', 'Aspect Polarity']]
 
-print(list(aspects_pd))
+# For 3/24/2019, we are implementating the most basic baseline method proposed in the project update
 
-print("Total number of reviews: ", aspects_pd.shape[0])
-print("Total number of aspect terms in training data: ", sum(aspects_pd['Aspect Count']))
+# Split the data as 80% train and 20% dev (project update test)
+train_index = math.floor(0.80 * aspect_terms_pd.shape[0]) # 80 % of the current data as training data
 
-list_aspects_data = []
-# Since reviews can have multiple aspect terms we need to re-format the data set so that each row represents the aspect
-for row in aspects_pd.itertuples(index = True, name = "Pandas"):
-	
-	terms_list, polarity_list = row[3], row[4]
+train_data = aspect_terms_pd.iloc[0:train_index, :]
+test_data = aspect_terms_pd.iloc[train_index:aspect_terms_pd.shape[0], :]
 
-	print(type(terms_list))
-	print(type(polarity_list))
+print(aspect_terms_pd.shape)
+print(train_data.shape)
+print(test_data.shape)
+print(train_data.shape[0] + test_data.shape[0])
 
-	print(terms_list)
-	print(polarity_list)
-
-	print(len(terms_list))
-	print(len(polarity_list))
-	print(len(terms_list) == len(polarity_list))
-	
-	# for term_index in range(len(terms_list)):
-
-	# 	term_data = {}
-
-	# 	term_data["Aspect Term"] = terms_list[term_index]
-	# 	term_data["Aspect Polarity"] = polarity_list[term_index]
-	# 	term_data["Review"] = row[1]
-	# 	term_data["Review ID"] = row[2]
-
-	# 	list_aspects_data.append(term_data)
-
-print(len(list_aspects_data))
+# SubTask 1: Aspect Term Extraction
+terms_bank = set(train_data['Aspect Term'])
+print(len(terms_bank))
 
 
+
+# SubTask 2: Sentiment Polarity Classifier
 
 
