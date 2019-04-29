@@ -13,7 +13,7 @@ train.freq <- as.vector(as.matrix(explore.data[2,]))
 
 train.data <- data.frame(labels, train.freq)
 ggplot(train.data, aes(labels, train.freq)) +
-    geom_bar(stat = "identity", fill = "tomato1", color = "black", width = 0.75) + 
+    geom_bar(stat = "identity", fill = "sienna2", color = "black", width = 0.75) + 
     ggtitle("Frequency of Aspect Categories (Train Data)") + 
     geom_text(aes(label = train.freq), vjust=1.6, color="white", size = 5) + 
     xlab("Aspect Category") + ylab("Frequency") +
