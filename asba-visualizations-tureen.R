@@ -84,9 +84,9 @@ cat.classify.data <- data.frame(methods.labels, ngrams.labels, scores)
 ggplot(cat.classify.data, aes(x = ngrams.labels, y = scores, group = methods.labels)) +
     geom_line(aes(color = methods.labels), size = 1) + 
     geom_point(aes(color = methods.labels), size = 1.5) + 
-    geom_text(aes(label = scores), vjust= -1.1) +
-    ggtitle("F1 Score for Aspect-Category Classification") + 
-    ylab("F1 Score (%)") + xlab("N-gram Feature") + 
+    # geom_text(aes(label = scores), vjust= -1.1) +
+    ggtitle("Aspect-Category Classification") + 
+    ylab("F1 Score (%)") + xlab("N-gram Feature") + ylim(c(81.5,89)) +
     theme_bw() + theme(axis.title.x = element_text(size = 12),
                        axis.title.y = element_text(size = 12),
                        axis.title = element_text(size = 15),
@@ -107,12 +107,13 @@ scores <- c(65.53, 68.76, 68.76, 72.89, 71.63, 71.45, 68.4, 71.81, 71.45)
 
 cat.classify.data <- data.frame(methods.labels, ngrams.labels, scores)
 
+
 ggplot(cat.classify.data, aes(x = ngrams.labels, y = scores, group = methods.labels)) +
     geom_line(aes(color = methods.labels), size = 1) + 
     geom_point(aes(color = methods.labels), size = 1.5) + 
-    geom_text(aes(label = scores), vjust= -0.65) +
-    ggtitle("Accuracy for Aspect-Term Sentiment Classification") + 
-    ylab("Accuracy (%)") + xlab("N-gram Feature") + 
+    #geom_text(aes(label = scores), vjust= -0.5) +
+    ggtitle("Aspect-Term Sentiment Classification") + 
+    ylab("Accuracy (%)") + xlab("N-gram Feature") + ylim(c(60,74)) +
     theme_bw() + theme(axis.title.x = element_text(size = 12),
                        axis.title.y = element_text(size = 12),
                        axis.title = element_text(size = 15),
@@ -135,9 +136,9 @@ cat.classify.data <- data.frame(methods.labels, ngrams.labels, scores)
 ggplot(cat.classify.data, aes(x = ngrams.labels, y = scores, group = methods.labels)) +
     geom_line(aes(color = methods.labels), size = 1) + 
     geom_point(aes(color = methods.labels), size = 1.5) + 
-    geom_text(aes(label = scores), vjust= -0.65) +
-    ggtitle("Accuracy for Aspect-Category Sentiment Classification") + 
-    ylab("Accuracy (%)") + xlab("N-gram Feature") + 
+    #geom_text(aes(label = scores), vjust= 1.50) +
+    ggtitle("Aspect-Category Sentiment Classification") + 
+    ylab("Accuracy (%)") + xlab("N-gram Feature") + ylim(c(63,70)) +
     theme_bw() + theme(axis.title.x = element_text(size = 12),
                        axis.title.y = element_text(size = 12),
                        axis.title = element_text(size = 15),
